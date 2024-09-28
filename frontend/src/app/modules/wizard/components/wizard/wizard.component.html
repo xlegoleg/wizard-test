@@ -1,0 +1,35 @@
+<div class="container" *ngIf="!!steps.length; else noStepsData">
+    <div class="card mt-5">
+        <div *ngFor="let step of steps; let i = index">
+            <div *ngIf="currentStepIndex == i" class="card-body" [@stepAnimation]>
+                <h2>Step {{ i + 1 }} / {{ steps.length }}</h2>
+                <div>
+                    <h3>{{ step.title }}</h3>
+
+                    <form>
+                        <div *ngFor="let question of step.questions; let j = index">
+                            <app-form-field
+                                    [question]="question"
+                                    [(answer)]="answers[currentStepIndex].answers[j]"
+                                    (multiChoiceUpdate)="updateMultiChoiceAnswer(question.id, $event.option, $event.checked)"
+                            ></app-form-field>
+                        </div>
+                    </form>
+
+                    <div *ngIf="errorMessage" class="alert alert-danger mt-3">{{ errorMessage }}</div>
+
+                    <div class="mt-3">
+                        <button class="btn btn-secondary me-2" (click)="prevStep()" [disabled]="currentStepIndex === 0">Previous</button>
+                        <button class="btn btn-primary" (click)="nextStep()" *ngIf="currentStepIndex < steps.length - 1">Next</button>
+                        <button class="btn btn-success" (click)="submit()" *ngIf="currentStepIndex === steps.length - 1">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #noStepsData>
+    <div class="container mt-5">
+        <div class="alert alert-warning">No steps available</div>
+    </div>
+</ng-template>

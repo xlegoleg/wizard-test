@@ -1,0 +1,39 @@
+version: '3.9'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_DATABASE=test
+    command: /bin/sh -c "npm run migration:run && npm run dev"
+    networks:
+      - 'wizard'
+  frontend:
+    build: ./frontend
+    ports:
+      - '4200:4200'
+    networks:
+      - 'wizard'
+    command: /bin/sh -c "npm run dev"
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: test
+    ports:
+      - '5432:5432'
+    networks:
+      - 'wizard'
+volumes:
+  pgdata:
+
+networks:
+  wizard:
